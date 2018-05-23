@@ -11,6 +11,6 @@ const dbConnect = async (url)=> {
 }
 
 const getDB = ()=>{ return _db };
+const getCol = (db,col) =>{return _db.db(db).collection(col)}
 
-
-module.exports = { getDB , dbConnect ,mongoID };
+module.exports = { getDB , dbConnect ,mongoID,getCol };

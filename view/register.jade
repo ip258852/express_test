@@ -1,0 +1,17 @@
+html
+    body
+        form(action="/api/v1/members", method="post")
+            | email : 
+            input(type="text", name="email")
+            br
+            | name   :
+            input(type="text", name="name")
+            br 
+            | pwd   :
+            input(type="text", name="pwd")
+            br
+            button(type="submit") 註冊
+            button(type="reset") 清除
+         
+
+    

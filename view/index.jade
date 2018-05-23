@@ -1,0 +1,17 @@
+html
+    body
+        form(action="/api/v1/login", method="post")
+            | email : 
+            input(type="text", name="email")
+            br
+            | pwd   :
+            input(type="text", name="pwd")
+            br
+            button(type="submit") 登入
+            button(type="reset") 清除
+        br
+        p 新客戶請先註冊!!!
+        a(href="/register")
+            |註冊
+
+    

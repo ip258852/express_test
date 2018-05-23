@@ -10,12 +10,18 @@ let verify_t = require('../service/verify_token');
 
 let config = require('../../config/config');
 
+
+// 註冊模組
 exports.member_register = async (req,res)=>{
+     
+    //確認信箱格式是否正確,
+    //不正卻回傳否
     if(!checkEmail.format(req.body.email)){
-        res.json({
+        res.status(400).json({
             status : 'register_email_format',       
             err_name : 'format is wrong'
-        })
+        });
+        return ;
     }
 
     const member_data = {
@@ -25,11 +31,12 @@ exports.member_register = async (req,res)=>{
         create_date : whatTime(),
         update_date : ''
     };
- 
+     
     let ress = await checkEmail.multi(req.body.email).catch(err=>{
         res.status(400).json(err);
+        return ;
     });
-
+     
     if(ress.isRegister){
         delete ress.isRegister ;
         res.json(ress);
