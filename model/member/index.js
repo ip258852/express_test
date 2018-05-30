@@ -1,7 +1,9 @@
-let member = require('./member_model');
+let all      = require('./mode_member');
 
 module.exports = {
-    register : member.member_register ,
-    login    : member.member_login,
-    update   : member.member_update
+    // for route
+    register : all.member_register ,
+    login    : all.member_login,
+    update   : all.member_update,
+    userData : all.member_userData
 }

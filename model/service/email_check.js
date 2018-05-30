@@ -1,5 +1,5 @@
 let db_connect = require('../service/db_connect');
-let config = require('../../config/config');
+let config = require('../../config/config').mongo_config;
 
 
 /**
@@ -18,7 +18,7 @@ exports.format  = (email) => {
  */
 exports.multi =  async (email) => { 
     
-    await db_connect.dbConnect(config.mongo_config.url).catch(err=>{
+    await db_connect.dbConnect(config.url).catch(err=>{
         throw {
             status : 'emailMultiCheck_db_connect',
             err_name : err.name,
@@ -27,7 +27,7 @@ exports.multi =  async (email) => {
     }); 
 
    
-    let member_col =  db_connect.getCol(config.mongo_config.db,config.mongo_config.collection_member);
+    let member_col =  db_connect.getCol(config.db,config.collection_member);
     let r = await member_col.findOne({email : email}).catch(err=>{
         throw {
             status : 'emailMultiCheck_db_search',
@@ -36,7 +36,7 @@ exports.multi =  async (email) => {
         };       
     });
     
-    await db_connect.getDB().close().catch(err=>{     
+    await db_connect.closeDB().catch(err=>{     
         throw {
             status : 'getList_db_close',
             err_name : err.name,
@@ -44,17 +44,6 @@ exports.multi =  async (email) => {
         }; 
     });
     
-    if(r){
-        return {
-            status : 'emailMultiCheck_db_search',
-            msg    : 'Email has already registered',
-            isRegister : true
-        }          
-    }else{
-        return {
-            status : 'emailMultiCheck_db_search',
-            msg    : 'Email has not already registered',
-            isRegister : false
-        }  
-    }        
+    return r ? true : false ;
+        
 }

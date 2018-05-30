@@ -5,12 +5,15 @@ let _db = {};
 
 const dbConnect = async (url)=> {
     _db = await mongo.connect(url);
+    /*
     _db.on('close',(reason)=>{
         console.log('db closed');
-    });    
+    });   
+     */
 }
 
 const getDB = ()=>{ return _db };
-const getCol = (db,col) =>{return _db.db(db).collection(col)}
+const getCol = (db,col) =>{return _db.db(db).collection(col)};
+const closeDB = ()=>{ return _db.close(); };
 
-module.exports = { getDB , dbConnect ,mongoID,getCol };
+module.exports = { getDB , dbConnect ,mongoID , getCol , closeDB };
