@@ -34,8 +34,8 @@ function submit_update_user(){
         url     : '/api/v1/members' ,
         data    : q_data ,     
         success : ()=>{
-            $('.update_Data').remove();
-            $('.main').append(`<h1 id='update_msg'>更改成功!!!!`);
+            $('.main').children().remove();
+            $('.main').append(`<h1>更改成功!!!!`);
         },
         error   : ()=>{
             if($('#update_msg').length==0){
@@ -56,9 +56,110 @@ function get_user_data(){
                 <p>name : ${data.name}</p>
                 <p>create_date : ${data.create_date}</p>
             `);
+            get_order_data();
         },
         error   : ()=>{
-                $('.update_Data').append(`<h1 id='update_msg'>更改失敗!!!!`);        
+                $('.main').append(`<h1>${err}`);        
         }                
+    });
+}
+
+function get_product_data(event){
+    $('.main').children().remove();
+    $.ajax({
+        type    : 'get',
+        url     : '/api/v1/products' ,
+        success : (data)=>{
+
+            if(event){
+                $('.main').append(`                
+                    <h1>購物失敗,請再來一次</h1>        
+                `);
+            }
+
+            data.forEach(element => {
+                $('.main').append(`
+                    <div class='${element.product_id}'>
+                        <h3> $$ ${ element.name } $$ </h1>
+                        <p id=cnt_${element.product_id}>  數量 : ${ element.quantity } </p> 
+                        <p>  價格 : ${ element.price }  </p> 
+                        <p>  備註 : ${ element.remark } </p> 
+                        <p>  ----------------------- </p>
+                        <input id='inc_${element.product_id}' type='button' value='+' onclick='add_val(${element.product_id},${element.quantity})'>
+                        <input id='val_${element.product_id}' type='input' value='0'  style=' width : 40px ; text-align:center ' readonly="readonly">
+                        <input id='dec_${element.product_id}' type='button' value='-' onclick='dec_val(${element.product_id})'>
+                    </div>        
+                `);  
+            });  
+            
+            $('.main').append(`                
+                    <br>
+                    <button onclick='checkout()'> 結帳 </button>
+            `);  
+        },
+        error   : (err)=>{
+            $('.main').append(`<h1>${err}`);        
+        } 
+    })
+}
+
+function add_val(id,cnt){
+   
+    let now = parseInt($(`input#val_${id}`).val());
+    
+    if(now < cnt){     
+        now++;
+        $(`input#val_${id}`).val(now);
+    }
+}
+
+function dec_val(id){
+    let now = parseInt($(`input#val_${id}`).val());
+    
+    if(now > 0){     
+        now--;
+        $(`input#val_${id}`).val(now);
+    }
+}
+
+function checkout(){
+    let data = {};
+
+    for( let i = 1 ; i < $('.main div').length+1 ; i++ ){
+                    
+        const val = parseInt($(`input#val_${i}`).val());
+        if(val != 0){
+            data[i] = val ;
+        } 
+    };
+     
+    $.ajax({
+        type    : 'POST',
+        url     : '/api/v1/orders' ,
+        data    :  data,     
+        success : (data)=>{
+           $('.main').children().remove();
+           $('.main').append(`<p>${data.status}</p>`);
+        },
+        error   : (err)=>{
+            get_product_data(true);
+        }
+    });
+}
+
+function get_order_data(event){
+    if(event){
+        $('.main').children().remove();
+    }
+    
+    $.ajax({
+        type    : 'GET',
+        url     : '/api/v1/orders' ,             
+        success : (data)=>{        
+           $('.main').append(`<p>order : ${data.length}</p>`);           
+        },
+        error   : (err)=>{
+            get_product_data(true);
+        }
     });
 }

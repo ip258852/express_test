@@ -1,10 +1,6 @@
-let login = require('./component_login');
-let register = require('./component_register');
-let update  = require('./component_update');
-let userData = require('./component_userData');
-
 let service = require('../service/index');
 let config = require('../../config/config');
+let component = require('./index_component');
 
 // 註冊模組
 exports.member_register = async (req,res)=>{
@@ -49,7 +45,7 @@ exports.member_register = async (req,res)=>{
     if(chek_res){        
         res.render('register',{ msg : `信箱已被註冊` } );
     }else{
-        await register(member_data).then(resolved=>{
+        await component.register(member_data).then(resolved=>{
             req.session.email = req.body.email ;
             res.redirect(301,'/');
         }).catch(err=>{
@@ -73,10 +69,9 @@ exports.member_login  = async (req,res)=>{
         email : req.body.email ,       
         pwd   : service.encryption(req.body.pwd)
     };
-
-   
+    
     // 登入ing...
-    let resolved = await login(member_data).catch(err=>{
+    let resolved = await component.login(member_data).catch(err=>{
         res.render('index', {msg : '登入失敗'});
         return
     });
@@ -92,12 +87,16 @@ exports.member_login  = async (req,res)=>{
 
 // 用戶資料修改模組
 exports.member_update = (req,res)=>{
-
+    // 基本判斷
     if(req.body.pwd !== req.body.rePwd ){
         res.status(400).send('密碼 No match!');
         return ;
+    }else if(!req.session.email){
+        res.redirect('/');
+        return ;
     }
     
+    // 資料封裝
     const member_data = {       
         email : req.session.email ,
         name  : req.body.name  ,
@@ -105,7 +104,8 @@ exports.member_update = (req,res)=>{
         update_date : service.timeFix.whatTime()
     };
     
-    update(member_data).then((resolved)=>{
+    // 資料更新
+    component.update(member_data).then((resolved)=>{
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);
@@ -114,8 +114,14 @@ exports.member_update = (req,res)=>{
 
 // 一般的取得資料
 exports.member_userData = (req,res)=>{
+    // 基本判斷
+    if(!req.session.email){
+       res.redirect('/');
+       return ;
+    }
 
-    userData(req.session.email).then((resolved)=>{
+    // 取得資料
+    component.userData(req.session.email).then((resolved)=>{
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);

@@ -1,16 +1,39 @@
 let router = require('express').Router();
-let product_m = require('../../model/product/product_model');
+let product_m = require('../../model/product/index');
 
 router.route('/products').
-    get(product_m.product_getlist);
+    get(product_m.list_product);
 
 router.route('/orders').
-    get(product_m.product_getOrder).
-    put(product_m.product_updateOrder).
-    delete(product_m.product_deleteOrder).
-    post(product_m.product_order);
+    post(product_m.create_order).
+    get(product_m.list_order);
 
-router.route('/pay').
-    post(product_m.product_pay);
+/*
+router.route('/orders').
+    put(product_m.update_order).
+    delete(product_m.delete_order).
+     
 
+router.route('/payment').
+    post(product_m.payment);
+*/
 module.exports = router ;
+
+/*
+
+    取得產品
+    /products get
+
+    刪除訂單
+    / orders delete
+    取得訂單
+    /  orders get
+    新增訂單
+    /  orders post
+    更新訂單
+    /  orders put
+
+    付款
+    /payment post
+ 
+*/
