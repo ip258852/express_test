@@ -52,7 +52,9 @@ module.exports = async (order)=>{
         // 訂單資料封裝    
         const order_data = {           
             member_id  : order.member,
+            
             product_id : products[ele],
+            product_name : products_db[ele].name,
             price      : products_db[ele].price,
             quantity   : quantity[ele],
             totalPrice : (products_db[ele].price) * quantity[ele],

@@ -6,14 +6,11 @@ router.route('/products').
 
 router.route('/orders').
     post(product_m.create_order).
-    get(product_m.list_order);
-
-/*
-router.route('/orders').
+    get(product_m.list_order).
     put(product_m.update_order).
-    delete(product_m.delete_order).
-     
+    delete(product_m.delete_order);
 
+/* 
 router.route('/payment').
     post(product_m.payment);
 */

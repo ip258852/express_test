@@ -31,6 +31,19 @@ module.exports = async (query)=>{
             err_msg  : err.message
         } ;   
     });
-   
-    return data;   
+
+    // 回傳所需的資料
+    return data.map((val)=>{
+        
+        return {
+            order_id    : val._id,
+            totalPrice  : val.totalPrice,
+            isPaid      : val.isPaid,
+            product_id  : val.product_id,
+            quantity    : val.quantity,
+            create_date : val.create_date,
+            price       : val.price ,
+            name        : val.product_name
+        }
+    });   
 }

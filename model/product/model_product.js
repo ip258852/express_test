@@ -1,9 +1,3 @@
-
- 
-let order_update = require('./updateOrder');
-let order_delete = require('./deleteOrder');
-let order_pay = require('./payOrder');
-
 let config = require('../../config/config');
 let index = require('./index_component');
 
@@ -23,22 +17,23 @@ exports.create_order = (req,res) =>{
     
     let product_id  = new Array() ;
     let product_cnt = new Array() ;
-
+     
     // 判斷是否為客戶
     if(!req.session.email){
         res.render('index');
         return ;
-    }
-
+    }  
+     
     // 資料封裝
     for(let i in req.body){
         product_id.push(parseInt(i));       
         product_cnt.push(parseInt(req.body[i]));
     }
-
-    //判斷資料是否有新增
-    if(product_id.length ==0){
-        res.status(400).end();
+    
+    //判斷資料是否有新增    
+    if(product_id.length == 0){         
+    
+        res.status(400).end('沒有更新資訊');
         return;
     }
 
@@ -75,29 +70,50 @@ exports.list_order = (req,res)=>{
     });
 }
 
-exports.product_updateOrder = async (req,res)=>{
-    /*
+// 更新訂單
+exports.update_order = async (req,res)=>{
     
-    const order_data = {
-        token_msg,
-        order_id : new mongoOID(req.body.order_id),
-        product_id : parseInt(req.body.product_id),
-        quantity : parseInt(req.body.quantity)
+    let order_id  = new Array() ;
+    let update_cnt = new Array() ;
+
+    // 判斷是否為客戶
+    if(!req.session.email){
+        res.render('index');
+        return ;
     }
-    order_update(order_data).then(resolved=>{
+     
+    // 封裝資料
+    for(let i in req.body){
+        order_id.push(i);
+        update_cnt.push(parseInt(req.body[i]))
+    }
+
+    //判斷資料是否有新增
+    if(order_id.length == 0){             
+        res.status(400).end('沒有更新資訊');
+        return;
+    }
+
+    // 封裝資料
+    const data = {
+        email      : req.session.email,
+        order_id   : order_id ,
+        update_cnt : update_cnt
+    }
+
+    index.update_order(data).then(resolved=>{
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);
-    });*/
+    });
 }
 
-exports.product_deleteOrder = (req,res)=>{
+exports.delete_order = (req,res)=>{
+    console.log(req.body);
+    res.end();
+
     /*
  
-    const data = {
-        member_id : token_msg.data,
-        order_id  : req.body.order_id
-    }
  
     order_delete(data).then(resolved=>{
         res.json(resolved);
