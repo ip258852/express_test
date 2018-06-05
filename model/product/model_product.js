@@ -108,18 +108,19 @@ exports.update_order = async (req,res)=>{
     });
 }
 
+/*
 exports.delete_order = (req,res)=>{
     console.log(req.body);
     res.end();
 
-    /*
+   
  
  
     order_delete(data).then(resolved=>{
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);
-    });*/
+    });
 }
 
 exports.product_pay = (req,res)=>{
@@ -130,4 +131,5 @@ exports.product_pay = (req,res)=>{
         res.status(400).json(err);
     })
 }   
+*/
  

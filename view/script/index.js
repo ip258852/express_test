@@ -1,3 +1,9 @@
+async function onload(){
+    
+    $('.main').append(`<p>wait.........</p>`);     
+    await get_user_data();
+}
+
 function logout(){
     $.get('/logout',(data,status)=>{
         window.location.reload();
@@ -46,19 +52,23 @@ function submit_update_user(){
 }
 
 function get_user_data(){
-    $('.main').children().remove();
+    
     $.ajax({
         type    : 'get',
         url     : '/api/v1/members' ,  
         success : (data)=>{
+            
+            $('.main').children().remove();  
             $('.main').append(`
                 <p>email : ${data.email}</p>
                 <p>name : ${data.name}</p>
                 <p>create_date : ${data.create_date}</p>
+                <p>order : ${data.order}</p>
             `);
-            get_order_data();
+           
         },
-        error   : ()=>{
+        error   : (err)=>{
+            console.log(err)
                 $('.main').append(`<h1>${err}`);        
         }                
     });
@@ -70,7 +80,7 @@ function get_product_data(event){
         type    : 'get',
         url     : '/api/v1/products' ,
         success : (data)=>{
-
+            $('.main').children().remove();  
             if(event){
                 $('.main').append(`                
                     <h1>購物失敗,請再來一次</h1>        
@@ -148,49 +158,39 @@ function checkout(){
 }
 
 function get_order_data(event){
-    if(event){
-        $('.main').children().remove();
-    }
-    
+    $('.main').children().remove();  
     $.ajax({
         type    : 'GET',
         url     : '/api/v1/orders' ,             
         success : (data)=>{
-             
-            if(event){
-                let sum = 0;
-                data.forEach(ele=>{
+            $('.main').children().remove();  
+            let sum = 0;
+            data.forEach(ele=>{
                         
-                    let isPaid = ele.isPaid ? '已付款' :'尚未付款' ;
-                    let index  = get_string_last4(ele.order_id);
+                let isPaid = ele.isPaid ? '已付款' :'尚未付款' ;
+                let index  = get_string_last4(ele.order_id);
 
-                    sum += ele.totalPrice ;
+                sum += ele.totalPrice ;
 
-                    $('.main').append(`
-                        <div class='${ index }' ondblclick='check_del()'>                            
-                            <p> 序號  : <span>${ele.order_id }</span></p>
-                            <p class='${ ele.product_id}'> 產品  : ${ ele.name }</p>
-                            <p id='cnt_${index}'> 數量  : ${ ele.quantity }</p>
-                            <p> 單價  : ${ ele.price }</p>
-                            <p> 時間  : ${ ele.create_date }</p> 
-                            <p> 付款  : ${ isPaid }</p> 
-                            <p> -------------*---------------</p>                     
-                        </div>
-                    `);   
-                    
-                })        
                 $('.main').append(`
-                    <p> 總和 : ${sum}</p>  
-                    <button onclick='update_order()'>修改訂單</button>  
-                `);        
-                               
-            }else{
-                $('.main').append(`
-                    <p> order : ${data.length}</p>    
-                `);     
-            }     
-             
-             
+                    <div class='${ index }'>                            
+                        <p> 序號  : <span>${ele.order_id }</span></p>
+                        <p class='${ ele.product_id}'> 產品  : ${ ele.name }</p>
+                        <p id='cnt_${index}'> 數量  : ${ ele.quantity }</p>
+                        <p> 單價  : ${ ele.price }</p>
+                        <p> 時間  : ${ ele.create_date }</p> 
+                        <p> 付款  : ${ isPaid }</p> 
+                        <p> -------------*---------------</p>                     
+                    </div>
+                `);   
+                $(`.${ index }`).click((event)=>{
+                   alert(event.target.nodeName)
+                })
+            })        
+            $('.main').append(`
+                <p> 總和 : ${sum}</p>  
+                <button onclick='update_order()'>修改訂單</button>  
+            `);      
         },
         error   : (err)=>{
             get_product_data(true);

@@ -18,6 +18,7 @@ module.exports = async(query) => {
     }); 
     //取得col
     let member_col = db_connect.getCol(config.db,config.collection_member);
+     
     //取得用戶資料
     let data = await member_col.findOne({ email : query.email }).catch(err=>{
         throw {
