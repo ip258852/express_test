@@ -10,10 +10,6 @@ router.route('/orders').
     put(product_m.update_order)
     ;
 
-/* 
-router.route('/payment').
-    post(product_m.payment);
-*/
 module.exports = router ;
 
 /*
@@ -30,7 +26,5 @@ module.exports = router ;
     更新訂單
     /  orders put
 
-    付款
-    /payment post
  
 */

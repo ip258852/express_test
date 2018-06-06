@@ -122,7 +122,7 @@ exports.member_userData = (req,res)=>{
        res.redirect('/');
        return ;
     }
-
+    /*
     client.get(req.session.email,(err,reply)=>{
         if(err) console.log(err);
         if(reply){                    
@@ -130,9 +130,9 @@ exports.member_userData = (req,res)=>{
         }else{            
             getUserDate(req.session.email,res);
         }
-    })
+    })*/
 
-/*
+
     // 取得資料
     component.userData(req.session.email).then((resolved)=>{
         res.json(resolved);
@@ -140,7 +140,7 @@ exports.member_userData = (req,res)=>{
         console.log(err)
         res.status(400).json(err);
     });
-*/    
+   
 }
 
 const getUserDate = (q,res)=>{
@@ -150,7 +150,5 @@ const getUserDate = (q,res)=>{
     }).catch(err=>{
         console.log(err)
         res.status(400).json(err);
-    });
-    
-     
+    });         
 }
