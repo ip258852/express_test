@@ -122,6 +122,7 @@ exports.update_order = async (req,res)=>{
     }
 
     index.update_order(data).then(resolved=>{
+        service.redis.del('products');
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);
@@ -131,8 +132,7 @@ exports.update_order = async (req,res)=>{
 // 假的訂單出貨
 exports.product_pay = (req,res)=>{
      
-    index.payment(req.session.email).then(resolved=>{        
-        
+    index.payment(req.session.email).then(resolved=>{                
         res.json(resolved);
     }).catch(err=>{
         console.log(err)

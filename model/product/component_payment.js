@@ -4,8 +4,8 @@ let timeFIX = require('../service/time_related');
 let mail = require('nodemailer').createTransport({
     service: 'gmail',
     auth: {
-      user: 'ip258852@gmail.com',
-      pass: 'b0976797722'
+      user: 'ip753357@gmail.com',
+      pass: 'a123456!654321'
     }
 });
 
@@ -22,7 +22,7 @@ module.exports = async (query) => {
     let o_col = db_connect.getCol(config.db,config.collection_order);
 
      
-    await o_col.updateMany({
+    let data = await o_col.updateMany({
         member_id : query,
         isPaid    : false
     },{
@@ -55,8 +55,5 @@ module.exports = async (query) => {
         };   
     });
 
-    return {
-        status : 'payOrder',
-        msg : 'already pay'
-    }
+    return data
 }

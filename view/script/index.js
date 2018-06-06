@@ -169,34 +169,38 @@ function get_order_data(event){
         data    : data ,  
         success : (data)=>{
             $('.main').children().remove();  
-            let sum = 0;
-            data.forEach(ele=>{
+            if(data.length){
+                let sum = 0;
+                data.forEach(ele=>{
                         
-                let isPaid = ele.isPaid ? '已付款' :'尚未付款' ;
-                let index  = get_string_last4(ele.order_id);
+                    let isPaid = ele.isPaid ? '已付款' :'尚未付款' ;
+                    let index  = get_string_last4(ele.order_id);
 
-                sum += ele.totalPrice ;
+                    sum += ele.totalPrice ;
 
-                $('.main').append(`
-                    <div class='${ index }'>                            
-                        <p> 序號  : <span>${ele.order_id }</span></p>
-                        <p class='${ ele.product_id}'> 產品  : ${ ele.name }</p>
-                        <p id='cnt_${index}'> 數量  : ${ ele.quantity }</p>
-                        <p> 單價  : ${ ele.price }</p>
-                        <p> 時間  : ${ ele.create_date }</p> 
-                        <p> 付款  : ${ isPaid }</p> 
-                        <p> -------------*---------------</p>                     
-                    </div>
-                `);   
-                
-            })        
-            if(!event){
-                $('.main').append(`
-                    <p> 總和 : ${sum}</p>  
-                    <button id='updateOrderBtn' onclick='update_order()'>修改訂單</button>  
-                    <button onclick='checkout_order()'>訂單繳費</button>  
-                `); 
-            }     
+                    $('.main').append(`
+                        <div class='${ index }'>                            
+                            <p> 序號  : <span>${ele.order_id }</span></p>
+                            <p class='${ ele.product_id}'> 產品  : ${ ele.name }</p>
+                            <p id='cnt_${index}'> 數量  : ${ ele.quantity }</p>
+                            <p> 單價  : ${ ele.price }</p>
+                            <p> 時間  : ${ ele.create_date }</p> 
+                            <p> 付款  : ${ isPaid }</p> 
+                            <p> -------------*---------------</p>                     
+                        </div>
+                    `);                   
+                })        
+                if(!event){
+                    $('.main').append(`
+                        <p> 總和 : ${sum}</p>  
+                        <button id='updateOrderBtn' onclick='update_order()'>修改訂單</button>  
+                        <button onclick='checkout_order()'>訂單繳費</button>  
+                    `); 
+                }    
+            }else{
+                $('.main').append(`<p>尚未有訂單</p>`);  
+            }
+              
         },
         error   : (err)=>{
             get_product_data(true);
@@ -281,6 +285,7 @@ function get_string_last4(str){
 
 function checkout_order(){
     if($('.main div').length==0) return 0;
+    confirm('確認繳交所有費用?') ? 
     $.ajax({
         type    : 'GET',
         url     : '/api/v1/payments' ,             
@@ -293,6 +298,6 @@ function checkout_order(){
                 <p>繳費失敗</p>
             `);   
         }
-    })
+    }) : 0 ;     
 }
  
