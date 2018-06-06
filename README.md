@@ -1,5 +1,9 @@
 # express_test
 
+## 摘要
+ 使用nodejs實作小型購物系統
+
+
 OS : win10
 db : mongodb
 
