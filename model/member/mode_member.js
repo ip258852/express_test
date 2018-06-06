@@ -1,9 +1,7 @@
 let service = require('../service/index');
 let config = require('../../config/config');
 let component = require('./index_component');
-
-const redis = require('redis');
-const client = redis.createClient();
+ 
 
 // 註冊模組
 exports.member_register = async (req,res)=>{
@@ -109,8 +107,12 @@ exports.member_update = (req,res)=>{
     
     // 資料更新
     component.update(member_data).then((resolved)=>{
+        // 清除快取
+        service.redis.del(req.session.email);
+
         res.json(resolved);
-    }).catch(err=>{
+    }).catch(err=>{      
+        console.log(err) ;
         res.status(400).json(err);
     });
 }    
@@ -122,30 +124,31 @@ exports.member_userData = (req,res)=>{
        res.redirect('/');
        return ;
     }
-    /*
-    client.get(req.session.email,(err,reply)=>{
+    
+    service.redis.get(req.session.email,(err,reply)=>{
         if(err) console.log(err);
+        
         if(reply){                    
             res.json(JSON.parse(reply));
         }else{            
             getUserDate(req.session.email,res);
         }
-    })*/
+    })
 
 
-    // 取得資料
+   /* // 取得資料
     component.userData(req.session.email).then((resolved)=>{
         res.json(resolved);
     }).catch(err=>{
         console.log(err)
         res.status(400).json(err);
     });
-   
+   */
 }
 
 const getUserDate = (q,res)=>{
-    component.userData(q).then((resolved)=>{
-        client.setex(q,555555555555555,JSON.stringify(resolved));
+    component.userData(q).then((resolved)=>{        
+        service.redis.setex(q,500,JSON.stringify(resolved));
         res.json(resolved);
     }).catch(err=>{
         console.log(err)

@@ -63,7 +63,7 @@ function get_user_data(){
                 <p>email : ${data.email}</p>
                 <p>name : ${data.name}</p>
                 <p>create_date : ${data.create_date}</p>
-                <p>order : ${data.order}</p>
+                <p>order : ${ data.order || 0 }</p>
             `);
            
         },
@@ -158,10 +158,15 @@ function checkout(){
 }
 
 function get_order_data(event){
-    $('.main').children().remove();  
+    
+    $('.main').children().remove(); 
+    
+    const data = event ? {status:1} : {status : 0};
+
     $.ajax({
         type    : 'GET',
-        url     : '/api/v1/orders' ,             
+        url     : '/api/v1/orders' ,     
+        data    : data ,  
         success : (data)=>{
             $('.main').children().remove();  
             let sum = 0;
@@ -183,14 +188,15 @@ function get_order_data(event){
                         <p> -------------*---------------</p>                     
                     </div>
                 `);   
-                $(`.${ index }`).click((event)=>{
-                   alert(event.target.nodeName)
-                })
+                
             })        
-            $('.main').append(`
-                <p> 總和 : ${sum}</p>  
-                <button onclick='update_order()'>修改訂單</button>  
-            `);      
+            if(!event){
+                $('.main').append(`
+                    <p> 總和 : ${sum}</p>  
+                    <button id='updateOrderBtn' onclick='update_order()'>修改訂單</button>  
+                    <button onclick='checkout_order()'>訂單繳費</button>  
+                `); 
+            }     
         },
         error   : (err)=>{
             get_product_data(true);
@@ -202,7 +208,7 @@ function update_order(){
 
     let target = $('.main div');
     let length = target.length;
-
+    if(length==0) return 0;
     for(let i = 0 ; i<length ;i++){
 
         let ind = target[i].className ;        
@@ -211,7 +217,7 @@ function update_order(){
         `);
     }
     
-    $(`button:last`).replaceWith('<button onclick="submit_order_change()">修改送出</button>')
+    $(`button#updateOrderBtn`).replaceWith('<button onclick="submit_order_change()">修改送出</button>')
 }
 
 function submit_order_change(){
@@ -247,6 +253,7 @@ function submit_order_change(){
        q_data[val.order_id] = val.quantity
     });    
     
+         
     $.ajax({
         type    : 'put',
         url     : '/api/v1/orders' ,
@@ -272,4 +279,20 @@ function get_string_last4(str){
     
 }
 
+function checkout_order(){
+    if($('.main div').length==0) return 0;
+    $.ajax({
+        type    : 'GET',
+        url     : '/api/v1/payments' ,             
+        success : (data)=>{
+            $('.main').children().remove();  
+            $('.main').append(`<p>繳費成功</p>`); 
+        },
+        error   : (err)=>{
+            $('.main').append(`
+                <p>繳費失敗</p>
+            `);   
+        }
+    })
+}
  

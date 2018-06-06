@@ -41,5 +41,5 @@ module.exports = async ()=>{
             quantity   : val.quantity,
             remark     : val.remark
         }
-    }) ;   
+    });   
 }

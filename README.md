@@ -23,5 +23,5 @@
         - 取得訂單     /GET  /api/v1/orders
         - 更新訂單     /PUT /api/v1/orders
         - 刪除訂單(Not Yet)
-        - 付款(Not Yet)
+        - 付款(假的)   /get  /api/vi/payments
   

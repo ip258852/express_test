@@ -13,9 +13,12 @@ module.exports = async (query)=>{
     });      
  
     let col   = db_connect.getCol(config.db,config.collection_order); 
-
+     
     // 查詢訂單資料
-    let data  = await col.find({ member_id : query }).toArray().catch(err=>{         
+    let data  = await col.find({ 
+        member_id : query.email,
+        isPaid    : query.status ? true : false 
+    }).toArray().catch(err=>{         
         throw {
             status   : 'listOrders_db_orderView',
             err_name : err.name,

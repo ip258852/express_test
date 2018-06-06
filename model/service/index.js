@@ -3,6 +3,13 @@ let dbConnect   = require('./db_connect');
 let emailCheck  = require('./email_check');
 let encryption  = require('./encryption');
 let timeFix     = require('./time_related');
- 
+let redis       = require('./redis_related')
 
-module.exports = { verifyToken , dbConnect , timeFix , emailCheck , encryption  };
+module.exports = { 
+    verifyToken , 
+    dbConnect , 
+    timeFix , 
+    emailCheck , 
+    encryption ,
+    redis
+};

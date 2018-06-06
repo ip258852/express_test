@@ -1,15 +1,24 @@
-let config = require('../../config/config');
-let index = require('./index_component');
+let config  = require('../../config/config');
+let index   = require('./index_component');
+let service = require('../service/index');
 
 // 產品列出
 exports.list_product =  (req,res) =>{
-
-    // 列出清單
-    index.list_product().then((resolved)=>{
-        res.json(resolved);
-    }).catch(err=>{
-        res.status(400).json(err);
-    });  
+    
+    service.redis.get('products',(err,reply)=>{
+        if(err)     res.status(400).json(err);
+        if(reply) {            
+            res.json(JSON.parse(reply));
+        }else{
+            // 列出清單
+            index.list_product().then((resolved)=>{
+                service.redis.setex('products', 50 , JSON.stringify(resolved));
+                res.json(resolved);
+            }).catch(err=>{
+                res.status(400).json(err);
+            });  
+        }
+    })     
 }
 
 // 新增訂單
@@ -46,6 +55,11 @@ exports.create_order = (req,res) =>{
         
     // 新增訂單
     index.create_order(data).then(resolved=>{
+        
+        // 清除掉產品快存
+        service.redis.del('products');
+        service.redis.del(req.session.email);
+
         res.json(resolved);
     }).catch(err=>{
         console.log(err)
@@ -55,15 +69,21 @@ exports.create_order = (req,res) =>{
 
 // 查看訂單
 exports.list_order = (req,res)=>{
-
+     
     // 基本判斷
     if(!req.session.email){
         res.redirect('/');
         return ;
     }
     
+    // 封裝資料
+    const data = {
+        email  : req.session.email,
+        status : parseInt(req.query.status)
+    }
+
     // 列出清單
-    index.list_order(req.session.email).then(resolved=>{
+    index.list_order(data).then(resolved=>{
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);
@@ -73,15 +93,15 @@ exports.list_order = (req,res)=>{
 // 更新訂單
 exports.update_order = async (req,res)=>{
     
-    let order_id  = new Array() ;
-    let update_cnt = new Array() ;
+    let order_id    = new Array() ;
+    let update_cnt  = new Array() ;    
 
     // 判斷是否為客戶
     if(!req.session.email){
         res.render('index');
         return ;
-    }
-     
+    } 
+          
     // 封裝資料
     for(let i in req.body){
         order_id.push(i);
@@ -98,7 +118,7 @@ exports.update_order = async (req,res)=>{
     const data = {
         email      : req.session.email,
         order_id   : order_id ,
-        update_cnt : update_cnt
+        update_cnt : update_cnt        
     }
 
     index.update_order(data).then(resolved=>{
@@ -107,6 +127,18 @@ exports.update_order = async (req,res)=>{
         res.status(400).json(err);
     });
 }
+
+// 假的訂單出貨
+exports.product_pay = (req,res)=>{
+     
+    index.payment(req.session.email).then(resolved=>{        
+        
+        res.json(resolved);
+    }).catch(err=>{
+        console.log(err)
+        res.status(400).json(err);
+    })
+}   
 
 /*
 exports.delete_order = (req,res)=>{
@@ -121,15 +153,6 @@ exports.delete_order = (req,res)=>{
     }).catch(err=>{
         res.status(400).json(err);
     });
-}
-
-exports.product_pay = (req,res)=>{
-    order_pay(req.body.order_id).then(resolved=>{
-        res.json(resolved);
-    }).catch(err=>{
-        console.log(err)
-        res.status(400).json(err);
-    })
-}   
+} 
 */
  

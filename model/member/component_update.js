@@ -31,9 +31,9 @@ module.exports = async (query) => {
 
     return resolved.ok <= 0 ? {
         status : 'update_db_findOneAndUpdate',
-        msg    : 'update failed!'
+        msg    : 'update failed!' 
     } : {
         status : 'update_db_findOneAndUpdate',
-        msg    : 'update successfully!',
+        msg    : 'update successfully!'
     } ;
 }
