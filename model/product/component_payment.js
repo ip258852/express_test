@@ -39,8 +39,8 @@ module.exports = async (query) => {
     });     
 
     await mail.sendMail({
-        from: 'ip258852@gmail.com',
-        to: 'ip258852@gmail.com',
+        from: 'ip753357@gmail.com',
+        to: 'ip753357@gmail.com',
         subject: '君の訂單',
         text: `您的訂單已繳費,詳細資料不告訴你哩`
     }).catch(err=>{

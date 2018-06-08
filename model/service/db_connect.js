@@ -19,3 +19,5 @@ const closeDB = ()=>{ return _db.close(); };
 
 
 module.exports = { getDB , dbConnect ,mongoID , getCol , closeDB };
+
+// 沒連到網卡,本身無法開啟localhost:27017

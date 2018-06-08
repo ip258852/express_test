@@ -25,3 +25,5 @@
         - 刪除訂單(Not Yet)
         - 付款(假的)   /get  /api/vi/payments
   
+## 參考資料
+    https://ithelp.ithome.com.tw/users/20107420/ironman/1381
