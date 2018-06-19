@@ -40,8 +40,8 @@ function submit_update_user(){
         url     : '/api/v1/members' ,
         data    : q_data ,     
         success : ()=>{
-            $('.main').children().remove();
-            $('.main').append(`<h1>更改成功!!!!`);
+            get_user_data();
+            alert('修改成功!!')
         },
         error   : ()=>{
             if($('#update_msg').length==0){
@@ -168,6 +168,7 @@ function get_order_data(event){
         url     : '/api/v1/orders' ,     
         data    : data ,  
         success : (data)=>{
+            
             $('.main').children().remove();  
             if(data.length){
                 let sum = 0;
@@ -175,26 +176,35 @@ function get_order_data(event){
                         
                     let isPaid = ele.isPaid ? '已付款' :'尚未付款' ;
                     let index  = get_string_last4(ele.order_id);
-
                     sum += ele.totalPrice ;
-
+                     
                     $('.main').append(`
-                        <div class='${ index }'>                            
+                        <div class='${ index }' >                            
                             <p> 序號  : <span>${ele.order_id }</span></p>
                             <p class='${ ele.product_id}'> 產品  : ${ ele.name }</p>
                             <p id='cnt_${index}'> 數量  : ${ ele.quantity }</p>
                             <p> 單價  : ${ ele.price }</p>
                             <p> 時間  : ${ ele.create_date }</p> 
-                            <p> 付款  : ${ isPaid }</p> 
-                            <p> -------------*---------------</p>                     
+                            <p> 付款  : ${ isPaid }</p>                                                                           
                         </div>
-                    `);                   
+                       
+                    `);
+                    if(!event){
+                        $('.main').append(`
+                            <button class='${ ele.order_id }' onclick='delete_order(event.target)'>刪除</button>        
+                            <p> -------------*---------------</p>  
+                        `);                        
+                    }else{
+                        $('.main').append(`                                  
+                            <p> -------------*---------------</p>  
+                        `); 
+                    }                               
                 })        
                 if(!event){
                     $('.main').append(`
                         <p> 總和 : ${sum}</p>  
                         <button id='updateOrderBtn' onclick='update_order()'>修改訂單</button>  
-                        <button onclick='checkout_order()'>訂單繳費</button>  
+                        <button onclick='checkout_order()'>訂單繳費</button>                           
                     `); 
                 }    
             }else{
@@ -300,4 +310,18 @@ function checkout_order(){
         }
     }) : 0 ;     
 }
- 
+
+function delete_order(node){ 
+    $.ajax({
+        type    : 'DELETE',
+        url     : '/api/v1/orders' ,     
+        data    : {target : `${node.className}`},        
+        success : (data)=>{
+            get_order_data(0);
+            alert(`已刪除${node.className}訂單!!!`);
+        },
+        error   : (err)=>{
+            alert(`刪除失敗,幫QQ`);
+        }
+    })
+}

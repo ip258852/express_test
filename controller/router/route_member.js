@@ -1,4 +1,5 @@
 let router = require('express').Router();
+let passport = require('../../model/service/passport');
 let member_m = require('../../model/member/index');
 
 router.route('/members').
@@ -8,7 +9,18 @@ router.route('/members').
 
 router.route('/login').
     post(member_m.login);
+
+router.route('/login_google').
+    get(passport.passport.authenticate('google',{
+        scope : ['profile','email']
+    }));
+
+router.route('/google/callback').
+    get(passport.passport.authenticate('google'),(req,res)=>{             
+        res.redirect('/');
+    });
  
+
 module.exports = router ;
 
 
@@ -23,5 +35,7 @@ module.exports = router ;
     
     登入
     /login post
+    google登入
+    /login_google get 
  
 */

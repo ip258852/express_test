@@ -7,17 +7,9 @@ let config = require('../../config/config').mongo_config;
 
 
 
-module.exports = async (data) =>{
-
-    await db_connect.dbConnect(config.url).catch(err=>{
-        throw {
-            status : 'register_db_connect',
-            err_name : err.name ,
-            err_msg  : err.message
-        };            
-    }); 
+module.exports = async (req,data) =>{
     
-    let col_member = db_connect.getCol(config.db,config.collection_member);
+    let col_member = req.db.getCol(config.db,config.collection_member);
     
     await col_member.insertOne(data).catch(err=>{
         throw {
@@ -25,14 +17,6 @@ module.exports = async (data) =>{
             err_name : err.name ,
             err_msg  : err.message
         };            
-    });
-
-    await db_connect.closeDB().catch(err=>{
-        throw  {
-            status : 'register_db_close',
-            err_name : err.name ,
-            err_msg  : err.message
-        };
     });
 
     return {

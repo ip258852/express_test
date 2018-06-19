@@ -5,5 +5,6 @@ module.exports = {
     list_order   : all.list_order,
     create_order : all.create_order,
     update_order : all.update_order,
-    pay_order    : all.product_pay
+    pay_order    : all.product_pay,
+    delete_order : all.delete_order
 }

@@ -1,18 +1,8 @@
-let db_connect = require('../service/db_connect');
 let config = require('../../config/config').mongo_config;
 
-module.exports = async (query)=>{
-   
-    // 開DB而已
-    await db_connect.dbConnect(config.url).catch(err=>{             
-        throw {
-            status   : 'listOrders_db_connect',
-            err_name : err.name,
-            err_msg  : err.message
-        } ;          
-    });      
+module.exports = async (req,query)=>{         
  
-    let col   = db_connect.getCol(config.db,config.collection_order); 
+    let col   = req.db.getCol(config.db,config.collection_order); 
      
     // 查詢訂單資料
     let data  = await col.find({ 
@@ -25,16 +15,7 @@ module.exports = async (query)=>{
             err_msg  : err.message
         } ;   
     });
-
-    // 關DB而已
-    await db_connect.closeDB().catch(err=>{       
-        throw {
-            status   : 'listOrders_db_close',
-            err_name : err.name,
-            err_msg  : err.message
-        } ;   
-    });
-
+    
     // 回傳所需的資料
     return data.map((val)=>{
         

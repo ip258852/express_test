@@ -1,9 +1,16 @@
 exports.rootV = (req,res)=>{    
+     
+    if(req.user) {
+        req.session.email = req.user.email;
+        req.user = undefined;
+    }
+    
     if(req.session.email){
-        res.render('user.jade',{username:req.session.email}); 
+        res.render('user.jade' ); 
     }else{
         res.render('index.jade');
     }
+    
 };
 
 exports.registerV = (req,res)=>{

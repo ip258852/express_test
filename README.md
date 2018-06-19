@@ -5,7 +5,7 @@
 
 ## 系統
 * OS : win10
-* DB : mongodb,redis(剛加入,尚未完善)
+* DB : mongodb,redis
 * FW : express.js
 
 ## 功能

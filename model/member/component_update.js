@@ -1,18 +1,13 @@
-let db_connect = require('../service/db_connect') ;
 let config = require('../../config/config').mongo_config;
 
-module.exports = async (query) => {
+/**
+ *  @query : 更新的會員資料,包含email,pwd,name
+ */
+module.exports = async (req,query) => {
     
-    await db_connect.dbConnect(config.url).catch(err=>{
-        throw {
-            status : 'update_db_connect',
-            err_name : err.name ,
-            err_msg : err.err_msg
-        } ;            
-    });
-
-    const member_col = db_connect.getCol(config.db,config.collection_member);
-   
+    // 取得COL
+    const member_col = req.db.getCol(config.db,config.collection_member);
+    // 尋找並更新物件
     let resolved = await member_col.findOneAndUpdate({ email : query.email },{ $set : query}).catch(err=>{
         throw {
             status : 'update_db_findOneAndUpdate',
@@ -20,15 +15,7 @@ module.exports = async (query) => {
             err_msg : err.err_msg
         } ;
     })
-    
-    await db_connect.closeDB().catch(err=>{
-        throw {
-            status : 'update_db_close',
-            err_name : err.name ,
-            err_msg : err.err_msg
-        } ;
-    });
-
+        
     return resolved.ok <= 0 ? {
         status : 'update_db_findOneAndUpdate',
         msg    : 'update failed!' 

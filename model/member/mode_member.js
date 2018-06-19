@@ -2,7 +2,6 @@ let service = require('../service/index');
 let config = require('../../config/config');
 let component = require('./index_component');
  
-
 // 註冊模組
 exports.member_register = async (req,res)=>{
     /*
@@ -35,7 +34,7 @@ exports.member_register = async (req,res)=>{
     };
      
     //檢查是否有被註冊
-    let chek_res = await service.emailCheck.multi(req.body.email).catch(err=>{        
+    let chek_res = await service.emailCheck.multi(req).catch(err=>{        
         res.render('register',{
             msg : '註冊失敗'
         });
@@ -46,7 +45,7 @@ exports.member_register = async (req,res)=>{
     if(chek_res){        
         res.render('register',{ msg : `信箱已被註冊` } );
     }else{
-        await component.register(member_data).then(resolved=>{
+        await component.register(req,member_data).then(resolved=>{
             req.session.email = req.body.email ;
             res.redirect(301,'/');
         }).catch(err=>{
@@ -59,12 +58,13 @@ exports.member_register = async (req,res)=>{
 
 // 登入模組
 exports.member_login  = async (req,res)=>{
+     
     // 防錯確認
     if(req.body.email =='' || req.body.pwd==""){
         res.render('index', {msg : '有欄位未填'});
         return ;
     }
-
+    
     // 資料封裝
     const member_data = {
         email : req.body.email ,       
@@ -72,7 +72,7 @@ exports.member_login  = async (req,res)=>{
     };
     
     // 登入ing...
-    let resolved = await component.login(member_data).catch(err=>{
+    let resolved = await component.login(req,member_data).catch(err=>{
         res.render('index', {msg : '登入失敗'});
         return
     });
@@ -106,52 +106,27 @@ exports.member_update = (req,res)=>{
     };
     
     // 資料更新
-    component.update(member_data).then((resolved)=>{
-        // 清除快取
-        service.redis.del(req.session.email);
-
+    component.update(req,member_data).then((resolved)=>{
+        // 清除快取        
         res.json(resolved);
     }).catch(err=>{      
-        console.log(err) ;
         res.status(400).json(err);
     });
 }    
 
 // 一般的取得資料
-exports.member_userData = (req,res)=>{
+exports.member_userData = async (req,res)=>{    
+    
     // 基本判斷
-    if(!req.session.email){
+    if(!req.session.email){           
        res.redirect('/');
        return ;
     }
-    
-    service.redis.get(req.session.email,(err,reply)=>{
-        if(err) console.log(err);
-        
-        if(reply){                    
-            res.json(JSON.parse(reply));
-        }else{            
-            getUserDate(req.session.email,res);
-        }
-    })
 
-
-   /* // 取得資料
-    component.userData(req.session.email).then((resolved)=>{
+    component.userData(req).then((resolved)=>{                  
         res.json(resolved);
-    }).catch(err=>{
-        console.log(err)
+    }).catch(err=>{       
         res.status(400).json(err);
-    });
-   */
+    });        
 }
 
-const getUserDate = (q,res)=>{
-    component.userData(q).then((resolved)=>{        
-        service.redis.setex(q,500,JSON.stringify(resolved));
-        res.json(resolved);
-    }).catch(err=>{
-        console.log(err)
-        res.status(400).json(err);
-    });         
-}

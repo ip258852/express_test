@@ -1,4 +1,6 @@
 html
+    head    
+        script(type='text/javascript' src="/js/jquery.js")        
     body
         form(action="/api/v1/login", method="post")
             | email : 
@@ -7,9 +9,10 @@ html
             | pwd   :
             input(type="password", name="pwd" )
             br
+            br
             button(type="submit") 登入
-            button(type="reset") 清除
-        br
+        button(onclick =`window.location='/api/v1/login_google'`) google登入           
+        
         p=msg
         p 新客戶請先註冊!!!
         a(href="/register")

@@ -1,24 +1,14 @@
-let db_connect  = require('../service/db_connect');
 let service     = require('../service/index');
 let config      = require('../../config/config').mongo_config;
 
-module.exports = async (order)=>{
+module.exports = async (req,order)=>{
     
     let products = order.product_id;
     let quantity = order.product_cnt;
-    let products_db = new Array();
-  
-    // 開DB而已
-    await db_connect.dbConnect(config.url).catch(err=>{            
-        throw {
-            status   : 'createOrder_db_connect',
-            err_name : err.name,
-            err_msg  : err.message
-        } ;       
-    });
+    let products_db = new Array();    
     
-    const o_col = db_connect.getCol(config.db,config.collection_order);
-    const p_col = db_connect.getCol(config.db,config.collection_product);
+    const o_col = req.db.getCol(config.db,config.collection_order);
+    const p_col = req.db.getCol(config.db,config.collection_product);
      
     // 查看產品清單
     for(let ele in products ){    
@@ -86,16 +76,7 @@ module.exports = async (order)=>{
             } ;           
         });
     }
-     
-    // 關掉DB而已
-    await db_connect.getDB().close().catch(err=>{    
-        throw {
-            status   : 'createOrder_db_close',
-            err_name : err.name,
-            err_msg  : err.message
-        } ;       
-    });
-
+        
     return { status : '訂單新增成功' };
 }
 

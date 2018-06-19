@@ -2,24 +2,15 @@ let db_connect = require('../service/db_connect');
 let config = require('../../config/config').mongo_config;
 let service = require('../service/index');
 
-module.exports = async(data)=>{
+module.exports = async(req,data)=>{
     
     // 改個封裝資料
     data.order_id = data.order_id.map(val=>{
         return new db_connect.mongoID(val);
-    })
-    
-    // 連上DB而已
-    await db_connect.dbConnect(config.url).catch(err=>{          
-        throw {
-            status : 'updateOrder_db_connect',
-            err_name : err.name,
-            err_msg  : err.message 
-        };            
-    });
+    })    
 
-    let o_col = db_connect.getCol(config.db,config.collection_order);    
-    let p_col = db_connect.getCol(config.db,config.collection_product);
+    let o_col = req.db.getCol(config.db,config.collection_order);    
+    let p_col = req.db.getCol(config.db,config.collection_product);
        
     // 更改資料而已
     await data.order_id.forEach(async (ele,ind) => {
@@ -97,15 +88,9 @@ module.exports = async(data)=>{
             return ;
         }
         
-        // 關DB而已
+         
         if(ind==data.order_id.length-1){
-            await db_connect.closeDB().catch(err=>{
-                throw {
-                    status : 'updateOrder_db_close',
-                    err_name : err.name,
-                    err_msg  : err.message 
-                };   
-            });            
+            return 'OK'       
         }
     });
         

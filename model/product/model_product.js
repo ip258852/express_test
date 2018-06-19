@@ -4,21 +4,12 @@ let service = require('../service/index');
 
 // 產品列出
 exports.list_product =  (req,res) =>{
-    
-    service.redis.get('products',(err,reply)=>{
-        if(err)     res.status(400).json(err);
-        if(reply) {            
-            res.json(JSON.parse(reply));
-        }else{
-            // 列出清單
-            index.list_product().then((resolved)=>{
-                service.redis.setex('products', 50 , JSON.stringify(resolved));
-                res.json(resolved);
-            }).catch(err=>{
-                res.status(400).json(err);
-            });  
-        }
-    })     
+
+    index.list_product(req).then((resolved)=>{    
+        res.json(resolved);
+    }).catch(err=>{
+        res.status(400).json(err);
+    });  
 }
 
 // 新增訂單
@@ -54,12 +45,7 @@ exports.create_order = (req,res) =>{
     }
         
     // 新增訂單
-    index.create_order(data).then(resolved=>{
-        
-        // 清除掉產品快存
-        service.redis.del('products');
-        service.redis.del(req.session.email);
-
+    index.create_order(req,data).then(resolved=>{                 
         res.json(resolved);
     }).catch(err=>{
         console.log(err)
@@ -83,9 +69,9 @@ exports.list_order = (req,res)=>{
     }
 
     // 列出清單
-    index.list_order(data).then(resolved=>{
+    index.list_order(req,data).then(resolved=>{        
         res.json(resolved);
-    }).catch(err=>{
+    }).catch(err=>{        
         res.status(400).json(err);
     });
 }
@@ -121,8 +107,7 @@ exports.update_order = async (req,res)=>{
         update_cnt : update_cnt        
     }
 
-    index.update_order(data).then(resolved=>{
-        service.redis.del('products');
+    index.update_order(req,data).then(resolved=>{      
         res.json(resolved);
     }).catch(err=>{
         res.status(400).json(err);
@@ -132,27 +117,28 @@ exports.update_order = async (req,res)=>{
 // 假的訂單出貨
 exports.product_pay = (req,res)=>{
      
-    index.payment(req.session.email).then(resolved=>{                
+    index.payment(req).then(resolved=>{                
         res.json(resolved);
-    }).catch(err=>{
-        console.log(err)
-        res.status(400).json(err);
-    })
-}   
-
-/*
-exports.delete_order = (req,res)=>{
-    console.log(req.body);
-    res.end();
-
-   
- 
- 
-    order_delete(data).then(resolved=>{
-        res.json(resolved);
-    }).catch(err=>{
+    }).catch(err=>{        
         res.status(400).json(err);
     });
+}   
+
+ 
+exports.delete_order = (req,res)=>{
+    
+    // 判斷是否為客戶
+    if(!req.session.email){
+        res.render('index');
+        return ;
+    } 
+    
+    index.delete_order(req,req.body.target).then(resolved=>{
+        res.json('T');
+    }).catch(err=>{
+        res.status(400).json('E');
+    });
+
 } 
-*/
+ 
  
