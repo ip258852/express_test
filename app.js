@@ -1,4 +1,5 @@
 // express related ==============
+const https = require('https');
 const express = require('express');
 const app  = express();
 // controler related ==============
@@ -9,11 +10,17 @@ const mongostore = require('connect-mongo')(session);
 const responseTime = require('response-time');
 const passport = require('./model/service/passport');
 const db = require('./model/service/db_connect');
+const fs = require('fs');
+
 // init db
 (async()=>{
     await db.dbConnect('mongodb://localhost:27017');    
     console.log('app db open')
-})()
+})();
+const https_opt = {
+    key  : fs.readFileSync('./static/private.key'),
+    cert : fs.readFileSync('./static/mycert.crt')
+}
  
 //app config related ==============
 app.set('view engine','jade');
@@ -47,7 +54,11 @@ app.use('/',router.basic);
 app.get('/test', (req,res)=>{     
     res.end();
 })
-
+/*
 app.listen(3000,()=>{
-    console.log('chart is online~');    
+    console.log('http chart is online~');    
+});
+*/
+https.createServer(https_opt,app).listen(3001,()=>{
+    console.log('https schart is online~')
 });

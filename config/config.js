@@ -14,3 +14,9 @@ exports.google_oath2 = {
     clientSecret : 'HamGMPap4jg1qB6Ne9JbIJS8',
     callbackURL : '/api/v1/google/callback',
 }
+
+exports.fb_oath2 = {
+    clientID: 193805557925277,
+    clientSecret: '32a8dbb5c1daca67ea6f7550103e8dc3',
+    callbackURL: "/api/v1/fb/callback",
+}
