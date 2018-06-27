@@ -1,19 +1,34 @@
-let db_connect = require('../service/db_connect');
-let config = require('../../config/config').mongo_config;
-let timeFIX = require('../service/time_related');
-/*
-let mail = require('nodemailer').createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'ip753357@gmail.com',
-      pass: 'a123456!654321'
-    }
-});
-*/
+const db_connect = require('../service/db_connect');
+const config = require('../../config/config').mongo_config;
+const timeFIX = require('../service/time_related');
+const opay = require('opay_payment_nodejs');
+ 
 module.exports = async (req) => {
-   
-    let o_col = req.db.getCol(config.db,config.collection_order);
-     
+          
+    let o_col = req.DB.getCol(config.db,config.collection_order);
+/*   
+    let data = await o_col.find({
+        member_id : req.session.email,
+        isPaid    : false
+    }).toArray().catch(err=>{console.log(err)});
+
+    const totalPrice = data.map((ele)=> {
+        return ele['totalPrice'];
+    }).reduce((bef,aft)=>{
+        return bef+aft;
+    })
+
+    const base_param = {
+        MerchantTradeNo: '30a0dte7fae1bb7d9c99', //請帶20碼uid, ex: f0a0d7e9fae1bb72bc93
+        MerchantTradeDate: '2019/02/13 15:45:30', //ex: 2017/02/13 15:45:30
+        TotalAmount: totalPrice.toString(),
+        TradeDesc: `${req.session.email}的訂單`,
+        ItemName: '測試商品等',
+        ReturnURL: 'https://localhost:3001/test',        
+    };   
+    const create = new opay();
+    return create.payment_client.aio_check_out_atm(parameters = base_param);
+*/
     let data = await o_col.updateMany({
         member_id : req.session.email,
         isPaid    : false
@@ -29,15 +44,7 @@ module.exports = async (req) => {
             err_msg  : err.message 
         };       
     });     
-    /*
-    await mail.sendMail({
-        from: 'ip753357@gmail.com',
-        to: 'ip753357@gmail.com',
-        subject: '君の訂單',
-        text: `您的訂單已繳費,詳細資料不告訴你哩`
-    }).catch(err=>{
-        console.log(err);
-    })  
-   */
-    return data
+    
+    return data;
+
 }

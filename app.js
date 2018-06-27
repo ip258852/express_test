@@ -8,20 +8,21 @@ const router = require('./controller/router/index');
 const session = require('express-session');
 const mongostore = require('connect-mongo')(session);
 const responseTime = require('response-time');
-const passport = require('./model/service/passport');
-const db = require('./model/service/db_connect');
+const Passport = require('./model/service/passport');
+const DB = require('./model/service/db_connect');
 const fs = require('fs');
-
-// init db
+ 
+// init 
 (async()=>{
-    await db.dbConnect('mongodb://localhost:27017');    
-    console.log('app db open')
+    await DB.init('mongodb://localhost:27017');
+    console.log('app db open');
+    Passport.init();
 })();
 const https_opt = {
     key  : fs.readFileSync('./static/private.key'),
     cert : fs.readFileSync('./static/mycert.crt')
 }
- 
+
 //app config related ==============
 app.set('view engine','jade');
 app.set('views',`${__dirname}/view`);
@@ -37,21 +38,22 @@ app.use(session({
     saveUninitialized : true
 })); 
 // set req參數
-app.use((req,res,next)=>{
-    if(!req.db) req.db=db;
+app.use((req,res,next)=>{    
+    if(!req.DB) req.DB=DB;   
     next();
 })
-
-app.use('/js',express.static('view/script')); 
-app.use(passport.passport.initialize());
-app.use(passport.passport.session());
  
+app.use('/js',express.static('view/script')); 
+ 
+app.use(Passport.initialize());
+app.use(Passport.session());
+
 // routes
 app.use('/api/v1',router.member);
 app.use('/api/v1',router.product);
 app.use('/',router.basic);
 
-app.get('/test', (req,res)=>{     
+app.post('/test', (req,res)=>{        
     res.end();
 })
 /*

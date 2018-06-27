@@ -26,6 +26,10 @@ exports.member_register = async (req,res)=>{
 
     //封裝資料
     const member_data = {
+        oauth       : {
+            oauth_id    : '',
+            oauth_fn    : 'normal',
+        },
         email : req.body.email ,
         name  : req.body.name  ,
         pwd   : service.encryption(req.body.pwd),

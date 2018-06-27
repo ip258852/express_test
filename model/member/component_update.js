@@ -6,7 +6,7 @@ let config = require('../../config/config').mongo_config;
 module.exports = async (req,query) => {
     
     // 取得COL
-    const member_col = req.db.getCol(config.db,config.collection_member);
+    const member_col = req.DB.getCol(config.db,config.collection_member);
     // 尋找並更新物件
     let resolved = await member_col.findOneAndUpdate({ email : query.email },{ $set : query}).catch(err=>{
         throw {

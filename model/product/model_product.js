@@ -1,6 +1,7 @@
-let config  = require('../../config/config');
-let index   = require('./index_component');
-let service = require('../service/index');
+const config  = require('../../config/config');
+const index   = require('./index_component');
+const service = require('../service/index');
+ 
 
 // 產品列出
 exports.list_product =  (req,res) =>{
@@ -110,16 +111,18 @@ exports.update_order = async (req,res)=>{
     index.update_order(req,data).then(resolved=>{      
         res.json(resolved);
     }).catch(err=>{
+        console.log(err)
         res.status(400).json(err);
     });
 }
 
 // 假的訂單出貨
 exports.product_pay = (req,res)=>{
-     
+   
     index.payment(req).then(resolved=>{                
-        res.json(resolved);
-    }).catch(err=>{        
+        res.send(resolved)
+    }).catch(err=>{    
+        console.log(err)    
         res.status(400).json(err);
     });
 }   

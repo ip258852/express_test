@@ -20,3 +20,25 @@ exports.fb_oath2 = {
     clientSecret: '32a8dbb5c1daca67ea6f7550103e8dc3',
     callbackURL: "/api/v1/fb/callback",
 }
+
+/**
+ *    未來有需要區分開發與測試環境,請使用
+ *    const config = {
+ *          development : {
+ *              參數A : ....
+ *              參數B : ....
+ *          },
+ *          production : {
+ *              參數A : ....
+ *              參數B : ....
+ *          }
+ *    }
+ *    module.exports = config ;
+ * 
+ *    in app.js
+ *    const config = require('config')[app.get('env')];
+ *    config.參數A
+ * 
+ *    區別開發環境與正式環境
+ * 
+ */

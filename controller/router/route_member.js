@@ -1,8 +1,7 @@
-let router = require('express').Router();
-let passport = require('../../model/service/passport');
-let member_m = require('../../model/member/index');
+const router = require('express').Router();
+const Passport = require('../../model/service/passport');
+const member_m = require('../../model/member/index');
 
- 
 router.route('/members').
     post(member_m.register).
     put(member_m.update).
@@ -14,23 +13,19 @@ router.route('/login').
 
 // google user login
 router.route('/login_google').
-    get(passport.passport.authenticate('google',{
-        scope : ['profile','email']
-    }));
+    get(Passport.authenticate('google'));
  
 router.route('/google/callback').
-    get(passport.passport.authenticate('google'),(req,res)=>{             
+    get(Passport.authenticate_cb('google'),(req,res)=>{             
         res.redirect('/');
     });
 
-// fb user login
+// fb user login    
 router.route('/login_fb').
-    get(passport.passport.authenticate('facebook',{ 
-        scope : ['email'] 
-    }));
+    get(Passport.authenticate('facebook'));
       
 router.route('/fb/callback').
-    get(passport.passport.authenticate('facebook'),(req,res)=>{                
+    get(Passport.authenticate_cb('facebook'),(req,res)=>{                
         res.redirect('/');
     });
 
@@ -48,7 +43,8 @@ module.exports = router ;
     
     登入
     /login post
-    google登入
+    google 登入
     /login_google get 
- 
+    FB 登入
+    /login_fb get 
 */

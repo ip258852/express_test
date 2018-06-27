@@ -8,8 +8,8 @@ let config = require('../../config/config').mongo_config;
 module.exports = async(req) => {
      
     //取得col
-    let member_col = req.db.getCol(config.db,config.collection_member);
-    let order_col  = req.db.getCol(config.db,config.collection_order);
+    let member_col = req.DB.getCol(config.db,config.collection_member);
+    let order_col  = req.DB.getCol(config.db,config.collection_order);
     //取得用戶資料
     let data = await member_col.findOne({ email : req.session.email }).catch(err=>{
         throw {

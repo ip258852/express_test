@@ -17,7 +17,7 @@ exports.format  = (email) => {
 exports.multi =  async (req) => { 
     const email = req.body.email;
    
-    let member_col =  req.db.getCol(config.db,config.collection_member);
+    let member_col =  req.DB.getCol(config.db,config.collection_member);
     let r = await member_col.findOne({email : email}).catch(err=>{
         throw {
             status : 'emailMultiCheck_db_search',

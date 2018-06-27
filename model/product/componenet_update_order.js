@@ -6,11 +6,11 @@ module.exports = async(req,data)=>{
     
     // 改個封裝資料
     data.order_id = data.order_id.map(val=>{
-        return new db_connect.mongoID(val);
+        return new req.DB.mongoID(val);
     })    
 
-    let o_col = req.db.getCol(config.db,config.collection_order);    
-    let p_col = req.db.getCol(config.db,config.collection_product);
+    let o_col = req.DB.getCol(config.db,config.collection_order);    
+    let p_col = req.DB.getCol(config.db,config.collection_product);
        
     // 更改資料而已
     await data.order_id.forEach(async (ele,ind) => {

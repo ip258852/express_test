@@ -3,8 +3,8 @@ let mongoID = require('mongodb').ObjectID;
 
 module.exports = async (req,query)=>{
     
-    const col_order = req.db.getCol(config.mongo_config.db,config.mongo_config.collection_order);
-    const col_pro   = req.db.getCol(config.mongo_config.db,config.mongo_config.collection_product);
+    const col_order = req.DB.getCol(config.mongo_config.db,config.mongo_config.collection_order);
+    const col_pro   = req.DB.getCol(config.mongo_config.db,config.mongo_config.collection_product);
 
     const order = await col_order.findOne({ _id : new mongoID(query)}).catch( err=>{throw err} );
     await col_pro.update({ 

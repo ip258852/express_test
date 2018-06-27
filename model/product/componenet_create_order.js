@@ -7,8 +7,8 @@ module.exports = async (req,order)=>{
     let quantity = order.product_cnt;
     let products_db = new Array();    
     
-    const o_col = req.db.getCol(config.db,config.collection_order);
-    const p_col = req.db.getCol(config.db,config.collection_product);
+    const o_col = req.DB.getCol(config.db,config.collection_order);
+    const p_col = req.DB.getCol(config.db,config.collection_product);
      
     // 查看產品清單
     for(let ele in products ){    

@@ -2,7 +2,7 @@ let config = require('../../config/config').mongo_config;
 
 module.exports = async (req)=>{
          
-    let p_col = req.db.getCol(config.db,config.collection_product);  
+    let p_col = req.DB.getCol(config.db,config.collection_product);  
 
     // 取得產品
     let data = await p_col.find({}).toArray().catch(err=>{              
