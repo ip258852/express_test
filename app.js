@@ -16,6 +16,13 @@ const fs = require('fs');
 (async()=>{
     await DB.init('mongodb://localhost:27017');
     console.log('app db open');
+    // init product
+    const config = require('./config/config');
+    const data = require('./config/product');
+    const p_col = DB.getCol(config.mongo_config.db,config.mongo_config.collection_product);
+    const re = await p_col.find({}).toArray();
+    re.length>0 ?  0 : await p_col.insertMany(data);
+    // passport init 
     Passport.init();
 })();
 const https_opt = {

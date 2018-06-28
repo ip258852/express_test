@@ -296,7 +296,7 @@ function get_string_last4(str){
 function checkout_order(){
     if($('.main div').length==0) return 0;
     confirm('確認繳交所有費用?') ? 
-   /* $.ajax({
+    $.ajax({
         type    : 'GET',
         url     : '/api/v1/payments' ,             
         success : (data)=>{
@@ -308,8 +308,7 @@ function checkout_order(){
                 <p>繳費失敗</p>
             `);   
         }
-    })*/
-    window.location='/api/v1/payments' : 0 ;     
+    }) : 0 ;     
 }
 
 function delete_order(node){ 
