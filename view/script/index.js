@@ -16,8 +16,8 @@ function add_Update_Table(){
     $('.main').append(`
         <div class='update_Data'>            
             使用者   : <input type="text", name="name" class='update_Data_0'><br>
-            密碼     : <input type="text", name="pwd" class='update_Data_1'><br>
-            密碼重複 : <input type="text", name="re-pwd" class='update_Data_2'><br>
+            密碼     : <input type="password", name="pwd" class='update_Data_1'><br>
+            密碼重複 : <input type="password", name="re-pwd" class='update_Data_2'><br>
             <button onclick='submit_update_user()'>送出</button>
         </div>
     `);     

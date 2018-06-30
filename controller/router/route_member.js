@@ -1,15 +1,17 @@
 const router = require('express').Router();
 const Passport = require('../../model/service/passport');
-const member_m = require('../../model/member/index');
+const m = require('../../model/member/memberModel').Model;
+
+
 
 router.route('/members').
-    post(member_m.register).
-    put(member_m.update).
-    get(member_m.userData);
+    post(m.register).
+    put(m.update).
+    get(m.userData);
 
 // normal user login
 router.route('/login').
-    post(member_m.login);
+    post(m.login);
 
 // google user login
 router.route('/login_google').

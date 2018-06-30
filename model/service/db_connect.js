@@ -5,9 +5,9 @@ const mongoID = require('mongodb').ObjectId;
 class connectDB{
     constructor(){
         this._db;    
-        this.mongoID = mongoID ;
+        this.mongoID = mongoID ;    
     }
-
+     
     async init(url){
         this._db = await mongo.connect(url);
     }
@@ -23,10 +23,6 @@ class connectDB{
     get getDB(){ 
         return this._db;
     };
-
-    get getmongoID(){
-        return this.mongoID;
-    }
 }
 
 module.exports = new connectDB();

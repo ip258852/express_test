@@ -1,8 +1,7 @@
 // express related ==============
 const https = require('https');
 const express = require('express');
-const app  = express();
-// controler related ==============
+const app  = express(); 
 const router = require('./controller/router/index');
 // toollllll
 const session = require('express-session');
@@ -11,7 +10,7 @@ const responseTime = require('response-time');
 const Passport = require('./model/service/passport');
 const DB = require('./model/service/db_connect');
 const fs = require('fs');
- 
+
 // init 
 (async()=>{
     await DB.init('mongodb://localhost:27017');
@@ -58,6 +57,7 @@ app.use(Passport.session());
 // routes
 app.use('/api/v1',router.member);
 app.use('/api/v1',router.product);
+app.use('/api/v1',router.order);
 app.use('/',router.basic);
 
 app.post('/test', (req,res)=>{        
