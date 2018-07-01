@@ -56,15 +56,15 @@ class Model{
             });
             return ;
         });
-         
+        
         //判斷是否重複,有--從新輸入 沒有--註冊資料
         if(chek_res){        
             res.render('register',{ msg : `信箱已被註冊` } );
         }else{
-            await member.memberRegister(data).then(resolved=>{
+            await member.memberRegister(data).then(resolved=>{                
                 req.session.email = req.body.email ;
                 res.redirect(301,'/');
-            }).catch(err=>{
+            }).catch(err=>{                
                 res.render('register',{
                     msg : '註冊失敗'
                 });

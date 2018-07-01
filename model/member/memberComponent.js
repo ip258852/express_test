@@ -8,7 +8,7 @@ class Member{
         this.DB = require('../service/db_connect');
         this.configMongo = require('../../config/config').mongo_config;
         this.colMember = this.DB.getCol(this.configMongo.db,this.configMongo.collection_member);
-        this.colOrder = this.DB.getCol(this.configMongo.db,this.configMongo.collection_member);
+        this.colOrder = this.DB.getCol(this.configMongo.db,this.configMongo.collection_order);
     }
 
     /**

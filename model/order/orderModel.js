@@ -47,7 +47,7 @@ class Model{
     }
 
     listAll(req,res){
-     
+        
         const order = new Order();
 
         // 基本判斷

@@ -1,5 +1,5 @@
 let config = require('../../config/config').mongo_config;
-
+const DB = require('../service/db_connect');
 /**
  * 確認信箱格式是否正確
  * @email 提供要驗證的信箱
@@ -17,7 +17,7 @@ exports.format  = (email) => {
 exports.multi =  async (req) => { 
     const email = req.body.email;
    
-    let member_col =  req.DB.getCol(config.db,config.collection_member);
+    let member_col =  DB.getCol(config.db,config.collection_member);
     let r = await member_col.findOne({email : email}).catch(err=>{
         throw {
             status : 'emailMultiCheck_db_search',
@@ -26,6 +26,5 @@ exports.multi =  async (req) => {
         };       
     });
     
-    return r ? true : false ;
-        
+    return r ? true : false ;        
 }
